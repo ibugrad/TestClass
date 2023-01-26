@@ -1,0 +1,12 @@
+public class AccountTriggerHandler {
+    public static void updateAnnualRevenue(List<Account> acList)  {
+        for(Account ac : acList){
+            List<Opportunity> oppList =[SELECT Id, Amount FROM Opportunity WHERE AccountId =: ac.Id];
+            Decimal sumofAmmount =0;
+            for(Opportunity opp : oppList){
+                sumofAmmount += opp.Amount;
+            }
+            ac.AnnualRevenue=sumofAmmount;
+        }
+    }
+}
