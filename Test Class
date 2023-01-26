@@ -1,0 +1,51 @@
+@isTest
+public class OpportunityTriggerHandlerTEST {
+    @testSetup
+    public static void setup(){
+        Account ac = new Account(Name='Test Account');
+        insert ac;
+        List<Opportunity> oppList = new List<Opportunity>();
+        for(Integer i=1; i<=10; i++){
+            Opportunity opp = new Opportunity();
+            opp.Name='Test Opp';
+            opp.StageName='Closed Won';
+            opp.CloseDate=Date.today() + 15;
+            opp.Amount=500;
+            opp.AccountId=ac.Id;
+            oppList.add(opp);
+        }
+        insert oppList;
+        Opportunity opp2 = new Opportunity();
+         	opp2.Name='Test Opp';
+            opp2.StageName='Closed Won';
+            opp2.CloseDate=Date.today() + 15;
+            opp2.Amount=500;
+        insert opp2;
+         }
+    @isTest
+    public static void test(){
+        Test.startTest();
+      Account ac = [SELECT Id FROM Account LIMIT 1];
+        Opportunity opp3 = new Opportunity();
+         	opp3.Name='Test Opp';
+            opp3.StageName='Closed Won';
+            opp3.CloseDate=Date.today() + 15;
+            opp3.Amount=500;
+        opp3.AccountId=ac.id;
+        insert opp3;
+        Test.stopTest();
+        Account ac2 = [SELECT Id, AnnualRevenue FROM Account LIMIT 1];
+        System.assertEquals(5500, ac2.AnnualRevenue);
+    }
+    @isTest
+    public static void test2(){
+        Test.startTest();
+        Account ac = [SELECT Id FROM Account LIMIT 1];
+      Opportunity opp = [SELECT Id, Amount FROM Opportunity WHERE AccountId =: ac.Id LIMIT 1 ];
+        opp.Amount = 1000;
+        update opp;
+        Test.stopTest();
+        Account ac2 = [SELECT Id, AnnualRevenue FROM Account LIMIT 1];
+        System.assertEquals(5500, ac2.AnnualRevenue);
+    }
+}
